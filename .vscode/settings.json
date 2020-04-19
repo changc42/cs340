@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "processthreadsapi.h": "c",
+    "iostream": "cpp"
+  }
+}
