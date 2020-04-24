@@ -1,5 +1,6 @@
 /*
 Assume priority values range from 1 to 10, inclusive
+function searches a list<Process*> for the process with the highest priority, and returns it
 */
 
 #include"Process.h"

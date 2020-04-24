@@ -10,6 +10,10 @@ Process::Process(string id, int b, int s, int p)
 
 }
 
+Process::Process()
+    :Process{"default", -1, -1, -1}{
+}
+
 void Process::incrementWait(){
     wait++;
 }
@@ -21,10 +25,6 @@ void Process::decrementBurst(){
     }
     burst--;
 }
-
-// int getTurnaroundTime(){
-//     if(start>end)
-// }
 
 void Process::display(){
     printf("{   id: %s\n"

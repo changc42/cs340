@@ -3,7 +3,7 @@ this parser defines a tab as some number of spaces.
 
 first, a line is retrieved from input using getline()
 then that line is parsed.
-a process is created based on reveived data and pushed to list
+a process is created based on parsed data and pushed to list
 repeat until EOF reached
 
 return list containing process objects
