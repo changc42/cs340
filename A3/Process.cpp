@@ -20,7 +20,7 @@ void Process::incrementWait(){
 
 void Process::decrementBurst(){
     if(burst==0){
-        cout << "burst is already 0. cannot decrement" << endl;
+        cout << "ERROR. burst is already 0. cannot decrement" << endl;
         exit(3);
     }
     burst--;
