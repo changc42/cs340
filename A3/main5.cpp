@@ -1,4 +1,4 @@
-//using tab delimiter
+//main5: implementing singly linked list
 
 /*
 compilation instructions(for Windows):
@@ -36,11 +36,12 @@ class Process{
     int end;
     int wait;
     int priority;
+    int timeQuantum;
 
     
     
     Process(string id, int b, int s, int p)
-        :id{id}, burst{b}, start{s}, end{-1}, wait{0}, priority{p}{
+        :id{id}, burst{b}, start{s}, end{-1}, wait{0}, priority{p}, timeQuantum{10}{
     }
     Process()
         :Process{"default", -1, -1, -1}{
@@ -66,33 +67,36 @@ class Process{
                 "   start: %d\n"
                 "   end: %d\n"
                 "   wait: %d\n"
-                "   priority: %d    }\n\n",
-                id.c_str(), burst, start, end, wait, priority);
+                "   priority: %d\n"
+                "   timeQuantum: %d }\n\n",
+                id.c_str(), burst, start, end, wait, priority, timeQuantum);
     }
 };
 
 class Node{
     public:
-    Process p;
+    Process* p;
     Node* next;
 
-    Node(string id, int b, int s, int p)
-        :p{id, b, s, p}, next{nullptr}{
+    Node(Process* p_arg)
+        :p{p_arg}, next{nullptr}{
 
+    }
+    Node(string id, int b, int s, int prio)
+        :p{nullptr}, next{nullptr}{
+            p = new Process(id, b, s, prio);
         }
 
     Node(string id)
         :Node{id, -1, -1, -1}{
-
         }
 
     Node()
-        :p{"default", -1, -1, -1}, next{nullptr}{
-
+        :Node{"default", -1, -1, -1}{
         }
 
     void display(){
-        p.display();
+        p->display();
     }
 };
 class SLinkedList{
@@ -107,40 +111,72 @@ class SLinkedList{
             tail = head;
         }
 
-    void addFirst(Node* n){
-        Node* temp = head->next;
-        head->next = n;
-        n->next = temp;
-        if(head==tail) tail = n;
-    }
-    void addFirst(string id, int b, int s, int p){
-        Node* n = new Node(id, b, s, p);
-        Node* temp = head->next;
-        head->next = n;
-        n->next = temp;
-        if(head==tail) tail = n;
-    }
-    void addFirst(string id){
-        Node* n = new Node(id);
+    // void addFirst(string id, int b, int s, int p){
+    //     Node* n = new Node(id, b, s, p);
+    //     Node* temp = head->next;
+    //     head->next = n;
+    //     n->next = temp;
+    //     if(head==tail) tail = n;
+    // }
+    // void addFirst(string id){
+    //     Node* n = new Node(id);
+    //     Node* temp = head->next;
+    //     head->next = n;
+    //     n->next = temp;
+    //     if(head==tail) tail = n;
+    // }
+    void addFirst(Process* p){
+        Node* n = new Node(p);
         Node* temp = head->next;
         head->next = n;
         n->next = temp;
         if(head==tail) tail = n;
     }
 
-    void addLast(Node* n){
+    // void addLast(string id, int b, int s, int p){
+    //     Node* n = new Node(id, b, s, p);
+    //     tail->next = n;
+    //     tail = n;
+    // }
+    // void addLast(string id){
+    //     Node* n = new Node(id);
+    //     tail->next = n;
+    //     tail = n;
+    // }
+    void push_back(Process* p){
+        Node* n = new Node(p);
         tail->next = n;
         tail = n;
     }
-    void addLast(string id, int b, int s, int p){
-        Node* n = new Node(id, b, s, p);
-        tail->next = n;
-        tail = n;
-    }
-    void addLast(string id){
-        Node* n = new Node(id);
-        tail->next = n;
-        tail = n;
+
+    // void remove(string id){
+    //     Node* a{head};
+    //     Node* b{nullptr};
+    //     Node* c{nullptr};
+    //     while(a != nullptr){
+    //         b = a->next;
+    //         if(b!=nullptr && b->p.id.compare(id) == 0){
+    //             c = b->next;
+    //             a->next = c;
+    //             break;
+    //         }
+    //     }
+    // }
+
+    //returns true is specified process was removed. returns false otherwise(process does not exist in list)
+    bool remove(Process* p){
+        Node* a{head};
+        Node* b{nullptr};
+        Node* c{nullptr};
+        while(a != nullptr){
+            b = a->next;
+            if(b->p == p){
+                if(b!=nullptr) c = b->next;
+                a->next = c;
+                return true;
+            }
+        }
+        return false;
     }
 
     void display(){
@@ -158,34 +194,28 @@ class SLinkedList{
         return false;
     }
 
-    // Process* getHighestPrio(){
-
-    // }
+    //searches list for the process with the highest priority and returns it. if list has multiple processes with the highest priority, the first occurence is returned
+    Process* getHighestPrio(){
+        if(empty()){
+            cout << "ERROR. Cannot call getHighestPrio on empty list" << endl;
+            exit(3);
+        }
+        Process* ret;
+        int highest = 0;
+        
+        Node* curr = head->next;
+        while(curr!=nullptr){
+            if(curr->p->priority > highest){
+                highest = curr->p->priority;
+                ret = curr->p;
+            }
+            curr=curr->next;
+        }
+        return ret;
+    }
 };
 
-//searches list for the process with the highest priority and returns it
-Process* getHighestPrio(list<Process*> processes){
-    if(processes.empty()){
-        cout << "ERROR. Cannot call getHighestPrio on empty list" << endl;
-        exit(3);
-    }
-    Process* ret;
-    int highest = 0;
-    for(auto p: processes){
-        if(p->priority > highest){
-            highest = p->priority;
-            ret = p;
-        }
-    }
-    return ret;
-}
 
-Process* getHighestPrio(SLinkedList queue){
-    if(queue.empty()){
-        cout << "ERROR. Cannot call getHighestPrio on empty list" << endl;
-        exit(3);
-    }
-}
 
 //given an input file, returns a list of the processes which the input file represents.
 //input file must have 4 columns, where the columns are ordered in the following manner:
@@ -231,18 +261,20 @@ list<Process*> parseInput(string fileName){
 
 int main(int argc, char* argv[]){
 
-    // if(argc < 2){
-    //     cout << "ERROR: must provide input file" << endl;
-    //     exit(3);
+    if(argc < 2){
+        cout << "ERROR: must provide input file" << endl;
+        exit(3);
         
-    // }
+    }
 
     // list<Process*> processes{};
     // processes = parseInput(argv[1]);
     
-    // Process* nullProcess = new Process(); //create a dummy null process to
-    // Process* running = nullProcess;
-    // list<Process*> readyQ;
+    Process* nullProcess = new Process(); //create a dummy null process to initialize running state
+    Process* running = nullProcess;
+    SLinkedList readyQ{};
+    //OLD
+    //list<Process*> readyQ;
 
     // int continuousTime{0};
     // for(int t=0; t<=96; t++){
@@ -319,11 +351,5 @@ int main(int argc, char* argv[]){
     //     cout << p->id << ", Turnaround: " << to_string(p->end - p->start + 1) << ", Wait: " << to_string(p->wait) << endl;
     // }
     
-    SLinkedList* myList = new SLinkedList();
-    myList->addLast("p1");
-    myList->addLast("p3");
-    myList->addLast("p2");
-    myList->addFirst("p42", 4, 3, 2);
-    myList->display();
 
 }
