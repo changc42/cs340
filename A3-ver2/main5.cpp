@@ -33,95 +33,98 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
-    if(argc < 2){
-        cout << "ERROR: must provide input file" << endl;
-        exit(3);
-        
-    }
-
-    // list<Process*> processes{};
-    // processes = parseInput(argv[1]);
+    list<Process*> processes{};
+    processes = parseInput("input.txt");
     
     Process* nullProcess = new Process(); //create a dummy null process to initialize running state
     Process* running = nullProcess;
     SLinkedList readyQ{};
-    //OLD
-    //list<Process*> readyQ;
 
-    // int continuousTime{0};
-    // for(int t=0; t<=96; t++){
-    //     bool displayedTime = false;
+    for(int t=0; t<=96; t++){
+        bool displayedTime = false;
 
-    //     for(auto p: processes){
-    //         if(p->start == t) readyQ.push_back(p);
-    //     }
+        for(auto p: processes){
+            if(p->start == t)readyQ.push_back(p);
+        }
 
-    //     if(!readyQ.empty()){
+        if(!readyQ.empty()){
             
-    //         Process* potential = getHighestPrio(readyQ);
-    //         if(potential->priority > running->priority){
-    //             cout << "t=" << t << ": " << endl;
-    //             displayedTime = true;
-    //             continuousTime = 0;
+            Process* potential = readyQ.getHighestPrio();
+            
+            if(potential->priority > running->priority){
+                cout << "t=" << t << ": " << endl;
+                displayedTime = true;
 
-    //             readyQ.remove(potential);
-    //             if(running->id!="default"){
-    //                 readyQ.push_back(running);
-    //                 cout << running->id << " moved to ready queue. There is process with higher priority" << endl;
-    //             }
-    //             cout << potential->id << " now running" << endl;
-    //             running = potential;
-    //         }
+                readyQ.remove(potential);
+                if(running->id!="default"){
+                    readyQ.addFirst(running);
+                    cout << running->id << " moved to front of ready queue. There is process with higher priority" << endl;
+                }
+                cout << potential->id << " now running" << endl;
+                running = potential;
+            }
+        }
 
-    //         if(continuousTime == 10){
-                
-    //             for(auto p: readyQ){
-    //                 if(p->priority == running->priority){
-    //                     if(!displayedTime){
-    //                         cout << "t=" << t << ": " << endl;
-    //                         displayedTime = true;
-    //                     }
-    //                     continuousTime = 0;
-    //                     readyQ.push_back(running);
-    //                     readyQ.remove(p);
-    //                     cout << running->id << " moved to ready queue. RR time quantum used up" << endl;
-    //                     running = p;
-    //                     cout << p->id << " now running" << endl;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
+        if(running->timeQuantum == 10){
+            
+            running->timeQuantum = 0;
 
-    //     for(auto p: readyQ) p->incrementWait();
-    //     if(running!=nullProcess) running->decrementBurst();
-    //     continuousTime++;
+            if(!readyQ.empty()){
+                Node* curr = readyQ.head->next;
+                while(curr!=nullptr){
+                    if(curr->p->priority == running->priority){
+                        if(!displayedTime){
+                            cout << "t=" << t << ": " << endl;
+                            displayedTime = true;
+                        }
+                        readyQ.push_back(running);
+                        readyQ.remove(curr->p);
+                        cout << running->id << " moved to back of ready queue. Round robin time quantum used" << endl;
+                        running = curr->p;
+                        cout << curr->p->id << " now running" << endl;
+                        break;
+                    }
+                    curr=curr->next;
+                }
+            }
+        }
 
-    //     if(running->burst == 0){
-    //         if(!displayedTime){
-    //             cout << "t=" << t << ": " << endl;
-    //             displayedTime = true;
-    //         }
-    //         running->end = t;
-    //         cout << running->id << " finished." << endl;
-    //         if(!readyQ.empty()){
-    //             continuousTime=0;
-    //             Process* replacement = getHighestPrio(readyQ);
-    //             running = replacement;
-    //             readyQ.remove(replacement);
-    //             cout << running->id << " will run next" << endl;
-    //         }
-    //         else running = nullProcess;
-    //     }
+        Node* curr = readyQ.head->next;
+        while(curr!=nullptr){
+            curr->p->incrementWait();
+            curr = curr->next;
+        }
+        if(running!=nullProcess) running->decrementBurst();
+        running->timeQuantum++;
 
-    //     if(displayedTime) cout << endl;
-    // }
+        if(running->burst == 0){
+            if(!displayedTime){
+                cout << "t=" << t << ": " << endl;
+                displayedTime = true;
+            }
+            running->end = t;
+            cout << running->id << " finished." << endl;
+            if(!readyQ.empty()){
+                Process* replacement = readyQ.getHighestPrio();
+                running = replacement;
+                readyQ.remove(replacement);
+                cout << running->id << " will run next" << endl;
+            }
+            else running = nullProcess;
+        }
 
-    // cout << "\nFinished running processes\n" << endl;
+        if(displayedTime) cout << endl;
+    }
 
-    // for(auto p: processes){
-    //     cout << p->id << ", Turnaround: " << to_string(p->end - p->start + 1) << ", Wait: " << to_string(p->wait) << endl;
-    // }
-    
+    cout << "\nFinished running processes\n" << endl;
 
+    for(auto p: processes){
+        string printTurnaround;
+        if(p->start > p->end){
+            printTurnaround="never ended";
+        }
+        else printTurnaround=to_string(p->end - p->start + 1);
+        cout << p->id << ", Turnaround: " << printTurnaround << ", Wait: " << to_string(p->wait) << endl;
+        
+    }
 }

@@ -5,6 +5,7 @@
 #include<sstream>
 #include<vector>
 #include "Process.cpp"
+#include "Node.cpp"
 using namespace std;
 
 class SLinkedList{
@@ -19,20 +20,6 @@ class SLinkedList{
             tail = head;
         }
 
-    // void addFirst(string id, int b, int s, int p){
-    //     Node* n = new Node(id, b, s, p);
-    //     Node* temp = head->next;
-    //     head->next = n;
-    //     n->next = temp;
-    //     if(head==tail) tail = n;
-    // }
-    // void addFirst(string id){
-    //     Node* n = new Node(id);
-    //     Node* temp = head->next;
-    //     head->next = n;
-    //     n->next = temp;
-    //     if(head==tail) tail = n;
-    // }
     void addFirst(Process* p){
         Node* n = new Node(p);
         Node* temp = head->next;
@@ -41,58 +28,28 @@ class SLinkedList{
         if(head==tail) tail = n;
     }
 
-    // void addLast(string id, int b, int s, int p){
-    //     Node* n = new Node(id, b, s, p);
-    //     tail->next = n;
-    //     tail = n;
-    // }
-    // void addLast(string id){
-    //     Node* n = new Node(id);
-    //     tail->next = n;
-    //     tail = n;
-    // }
     void push_back(Process* p){
         Node* n = new Node(p);
         tail->next = n;
         tail = n;
     }
 
-    // void remove(string id){
-    //     Node* a{head};
-    //     Node* b{nullptr};
-    //     Node* c{nullptr};
-    //     while(a != nullptr){
-    //         b = a->next;
-    //         if(b!=nullptr && b->p.id.compare(id) == 0){
-    //             c = b->next;
-    //             a->next = c;
-    //             break;
-    //         }
-    //     }
-    // }
-
     //returns true is specified process was removed. returns false otherwise(process does not exist in list)
     bool remove(Process* p){
         Node* a{head};
         Node* b{nullptr};
         Node* c{nullptr};
-        while(a != nullptr){
+        while(a->next != nullptr){
             b = a->next;
             if(b->p == p){
-                if(b!=nullptr) c = b->next;
+                c = b->next;
                 a->next = c;
+                if(c==nullptr) tail = a;
                 return true;
             }
+            a=a->next;
         }
         return false;
-    }
-
-    void display(){
-        Node* curr = head->next;
-        while(curr!=nullptr){
-            curr->display();
-            curr = curr->next;
-        }
     }
 
     bool empty(){
@@ -100,6 +57,18 @@ class SLinkedList{
             return true;
         }
         return false;
+    }
+
+    void display(){
+        if(empty()) cout << "empty" << endl;
+        else{
+            Node* curr = head->next;
+            while(curr!=nullptr){
+                curr->display();
+                curr = curr->next;
+            }
+        }
+        
     }
 
     //searches list for the process with the highest priority and returns it. if list has multiple processes with the highest priority, the first occurence is returned

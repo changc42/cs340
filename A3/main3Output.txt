@@ -1,0 +1,55 @@
+t=0: 
+P1 now running
+
+t=14:
+P1 finished.
+P2 will run next
+
+t=20:
+P2 moved to ready queue. There is process with higher priority
+P3 now running
+
+t=30:
+P3 moved to ready queue. RR time quantum used up
+P4 now running
+
+t=40:
+P4 moved to ready queue. RR time quantum used up
+P3 now running
+
+t=45:
+P3 moved to ready queue. There is process with higher priority
+P5 now running
+
+t=49:
+P5 finished.
+P4 will run next
+
+t=55:
+P4 moved to ready queue. There is process with higher priority
+P6 now running
+
+t=69:
+P6 finished.
+P3 will run next
+
+t=74:
+P3 finished.
+P4 will run next
+
+t=79:
+P4 finished.
+P2 will run next
+
+t=94:
+P2 finished.
+
+
+Finished running processes
+
+P1, Turnaround: 15, Wait: 0
+P2, Turnaround: 95, Wait: 75
+P3, Turnaround: 55, Wait: 35
+P4, Turnaround: 55, Wait: 35
+P5, Turnaround: 5, Wait: 0
+P6, Turnaround: 15, Wait: 0

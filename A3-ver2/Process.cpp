@@ -19,7 +19,7 @@ class Process{
     
     
     Process(string id, int b, int s, int p)
-        :id{id}, burst{b}, start{s}, end{-1}, wait{0}, priority{p}, timeQuantum{10}{
+        :id{id}, burst{b}, start{s}, end{-1}, wait{0}, priority{p}, timeQuantum{0}{
     }
     Process()
         :Process{"default", -1, -1, -1}{
