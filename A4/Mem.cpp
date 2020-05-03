@@ -5,6 +5,8 @@
 #include "./Process.cpp"
 
 class Mem{
+    public:
+
     list<Process*> processes;
     int capacity;
 
@@ -54,7 +56,17 @@ class Mem{
     }
 
     void allocate(Process* p){
+        vector<int> bestFit = findBestFit(p);
+        p->start = bestFit.at(0);
+        p->end = p->start + p->size - 1;
+        list<Process*>::iterator it;
+        it = processes.begin();
 
+        while((*it)->start < bestFit.at(1)){
+            it++;
+        }
+
+        processes.insert(it, p);
     }
 
     void display(){
