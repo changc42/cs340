@@ -31,6 +31,6 @@ class Process{
         }
 
     void display(){
-        cout << id << ", size: " << size << ", at [" << start << ", " << end << "]" << endl;
+        cout << "Addresses" << "[" << start << " : " << end << "] Process " << id << endl;
     }
 };
