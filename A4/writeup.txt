@@ -1,0 +1,57 @@
+compilation instructions:
+g++ allocator_CChang.cpp
+a 1048576
+
+-----------------------------
+OUTPUT:
+-----------------------------
+
+allocator>RQ P0 262144 B
+allocator>RQ P1 262144 B
+allocator>RQ P2 262200 B
+allocator>STAT
+Addresses[0 : 262143] Process P0
+Addresses[262144 : 524287] Process P1
+Addresses[524288 : 786487] Process P2
+Addresses[786488 : 1048575] Free
+
+allocator>RL P1
+allocator>RQ P3 200000 B
+allocator>STAT
+Addresses[0 : 262143] Process P0
+Addresses[262144 : 524287] Free
+Addresses[524288 : 786487] Process P2
+Addresses[786488 : 986487] Process P3
+Addresses[986488 : 1048575] Free
+
+allocator>RQ P4 200000 B
+allocator>STAT
+Addresses[0 : 262143] Process P0
+Addresses[262144 : 462143] Process P4
+Addresses[462144 : 524287] Free
+Addresses[524288 : 786487] Process P2
+Addresses[786488 : 986487] Process P3
+Addresses[986488 : 1048575] Free
+
+allocator>C
+allocator>STAT
+Addresses[0 : 262143] Process P0
+Addresses[262144 : 462143] Process P4
+Addresses[462144 : 724343] Process P2
+Addresses[724344 : 924343] Process P3
+Addresses[924344 : 1048575] Free
+
+allocator>QUIT
+
+
+---------------------------------------------
+WRITEUP
+----------------------------------
+
+one difficulty i had was being frustrated by the unintuitiveness of C++
+I tried using cin to get input, but if you type in a line separated by spaces, cin only takes in the first word
+ of the sentence
+    I am also frustrated that C++ does not have a library function to check if a string is a number. I had to create
+    this function my self
+
+it took some time to come up with the algorithm to find best fit, and find all the holes.

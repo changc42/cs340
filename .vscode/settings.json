@@ -8,6 +8,7 @@
     "ostream": "cpp",
     "initializer_list": "cpp",
     "xiosbase": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "iosfwd": "cpp"
   }
 }

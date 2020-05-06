@@ -3,6 +3,7 @@
 #include<string>
 #include<list>
 #include<vector>
+#include<sstream>
 #include "./Process.cpp"
 
 class Mem{
@@ -13,9 +14,10 @@ class Mem{
 
     Mem(int c)
         :capacity{c}{
-
     }
 
+    //returns a list of vector<int> of size 2. first index is start, and second index is end
+    //vector<int> represents free region of memory
     list<vector<int>> getHoles(){
         list<vector<int>> holes;
 
@@ -48,6 +50,7 @@ class Mem{
         return holes;
     }
 
+    //given a process p, returns the free region corresponding to best fit 
     vector<int> findBestFit(Process* p){
         int pSize = p->size;
         vector<int> bestFitSpace{-1,-1};
@@ -116,21 +119,12 @@ class Mem{
         }
     }
 
-    // void parseInput(string input){
-    //     stringstream ss(input);
-    //     vector<string> inputVec;
-    //     string token;
-    //     while(getline(ss, token, ' ')){
-    //         inputVec.push_back(token);
-    //     }
-    //     for(auto s: inputVec){
-    //         cout << s << endl;
-    //     }
-    // }
+    bool isNumber(string str){
+        string::iterator it = str.begin();
+        while(isdigit(*it) && it!=str.end()) it++;
 
-    // void executeInput(){
-
-    // }
+        return str.size()>0 && it==str.end();
+    }
 
     void display(){
         list<vector<int>> holes = getHoles();
@@ -159,5 +153,44 @@ class Mem{
         cout << endl;
     }
 
+    void start(){
+        while(true){
+            cout << "allocator>";
+            string input;
+            getline(cin, input);
+        
+            stringstream ss(input);
+            vector<string> inputVec;
+            string token;
+            while(getline(ss, token, ' ')){
+                inputVec.push_back(token);
+            }
 
+            if(inputVec.size()==0){
+                cout << "invalid input, try again" << endl;
+            }
+            else if(inputVec.at(0).compare("RQ")==0){
+                if(!isNumber(inputVec.at(2)) ||  inputVec.at(3).compare("B")!=0) cout << "invalid input, try again" << endl;
+                else{
+                    int size = stoi(inputVec.at(2));
+                    string id = inputVec.at(1);
+                
+                    Process* p = new Process(id, size);
+                    allocate(p);
+                }
+                
+            }else if (inputVec.at(0).compare("RL")==0){
+                string id = inputVec.at(1);
+                deallocate(id);
+            }else if (inputVec.at(0).compare("STAT")==0){
+                display();
+            }else if (inputVec.at(0).compare("C")==0){
+                compact();
+            }else if (inputVec.at(0).compare("QUIT")==0){
+                break;
+            }else{
+                cout << "invalid input, try again" << endl;
+            }
+        }
+    }
 };
