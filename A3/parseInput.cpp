@@ -1,24 +1,23 @@
-/*
-this parser defines a tab as some number of spaces.
-
-first, a line is retrieved from input using getline()
-then that line is parsed.
-a process is created based on parsed data and pushed to list
-repeat until EOF reached
-
-return list containing process objects
-*/
-
 #include<iostream>
-#include "Process.h"
 #include<fstream>
 #include<list>
 #include<sstream>
+#include<vector>
+#include "Process.cpp"
 using namespace std;
 
+//given an input file, returns a list of the processes which the input file represents.
+//input file must have 4 columns, where the columns are ordered in the following manner:
+//id, priority, burst, and arrival
 list<Process*> parseInput(string fileName){
     ifstream input;
     input.open(fileName);
+
+    if(input.fail()){
+        cout << "ERROR: File \'" << fileName << "\' does not exist" << endl;
+        exit(3);
+    }
+
     list<Process*> processes{};
     while(!input.eof()){
         string id;
@@ -32,24 +31,16 @@ list<Process*> parseInput(string fileName){
         stringstream ss(line);
         
 
-        do{
-            getline(ss, nextToken, ' ');
-        }while(nextToken=="");
+        getline(ss, nextToken, '\t');
         id = nextToken;
 
-        do{
-            getline(ss, nextToken, ' ');
-        }while(nextToken=="");
+        getline(ss, nextToken, '\t');
         p = stoi(nextToken);
 
-        do{
-            getline(ss, nextToken, ' ');
-        }while(nextToken=="");
+        getline(ss, nextToken, '\t');
         b = stoi(nextToken);
 
-        do{
-            getline(ss, nextToken, ' ');
-        }while(nextToken=="");
+        getline(ss, nextToken, '\t');
         s = stoi(nextToken);
 
         processes.push_back(new Process(id,b,s,p));
